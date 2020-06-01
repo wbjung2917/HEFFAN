@@ -16,6 +16,7 @@
 
 package org.tensorflow.demo;
 
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -451,6 +452,17 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
           CameraActivity.stopDetection = true;
           capture();
         }
+      }
+    });
+
+
+    Button tr_btn=findViewById(R.id.to_result);
+
+    tr_btn.setOnClickListener(new View.OnClickListener(){
+      @Override
+      public void onClick(View v){
+        Intent res=new Intent(getApplicationContext(),org.tensorflow.demo.ResultActivity.class);       //Uri 를 이용하여 웹브라우저를 통해 웹페이지로 이동하는 기능
+        startActivity((res));
       }
     });
 

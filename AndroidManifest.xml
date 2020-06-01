@@ -54,6 +54,7 @@
                   android:label="@string/activity_name_detection">
         </activity>
         <activity android:name="org.tensorflow.demo.DetectorActivity"></activity>
+        <activity android:name=".ResultActivity"></activity>
         <!--
         <activity android:name="org.tensorflow.demo.StylizeActivity"
                   android:screenOrientation="portrait"
