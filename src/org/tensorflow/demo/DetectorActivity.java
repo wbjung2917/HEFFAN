@@ -95,8 +95,9 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   // Graphs and models downloaded from http://pjreddie.com/darknet/yolo/ may be converted e.g. via
   // DarkFlow (https://github.com/thtrieu/darkflow). Sample command:
   // ./flow --model cfg/tiny-yolo-voc.cfg --load bin/tiny-yolo-voc.weights --savepb --verbalise
-  private static final String YOLO_MODEL_FILE = "file:///android_asset/image_to_label.pb";
-  private static final String YOLO_MODEL_CONTENT_FILE = "file:///android_asset/label_to_content.pb";
+  private static final String YOLO_MODEL_FILE = "file:///android_asset/image_to_label.pb"; // 안쓰는거
+  private static final String YOLO_MODEL_CONTENT_FILE = "file:///android_asset/label_to_content.pb"; // 실제 사용
+  //private static final String YOLO_MODEL_CONTENT_FILE = "file:///android_asset/tiny-yolo-4c.pb"; // 실제 사용
   private static final int YOLO_INPUT_SIZE = 416;
   private static final String YOLO_INPUT_NAME = "input";
   private static final String YOLO_OUTPUT_NAMES = "output";
@@ -373,7 +374,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                 //int leftPoint = 0; // 왼쪽 끝까지 포인트
                 //int topPoint = Math.round(location.top);
                 int topPoint = 0;
-                int secondWidth = Math.round(location.right- location.left);
+                int secondWidth = Math.round(location.right- location.left + 2);
                 //int secondWidth = 416;
                 //int secondHeight = Math.round(location.bottom - location.top);
                 int secondHeight = 416;
@@ -443,9 +444,9 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
       public void onClick(View view) {
         // 캡처를 여러번 실행하도록 하자
         for(int i=0;i<10;i++){
-          // sleep 0.1초하고
+          // sleep 0.5초하고
           try{
-            Thread.sleep((long) 0.1);
+            Thread.sleep((long) 0.5);
           }catch(InterruptedException e){}
 
           // 디텍트
