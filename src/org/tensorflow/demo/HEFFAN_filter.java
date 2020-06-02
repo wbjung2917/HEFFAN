@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class HEFFAN_filter {
+    static int cnt = 0;
+    static String result_texts="";
     public void sample(){
         ArrayList<ArrayList<String>> before=new ArrayList<ArrayList<String>>();
 
@@ -20,7 +22,17 @@ public class HEFFAN_filter {
         supplement_filter(before);
     }
 
+    public static void collectTexts(int loop,String text){
+        System.out.println("colleced Texts");
+        cnt++;
+        result_texts+=text;
+        if(cnt>=loop){
+            cnt=0;
+            text_adapter(result_texts);
+        }
+    }
     public static void text_adapter(String texts){
+
         System.out.println("FILTER : public void text_adapter(String texts)");
         System.out.println("BEFORE FILTER"+texts);
         ArrayList<ArrayList<String>> before=new ArrayList<ArrayList<String>>();

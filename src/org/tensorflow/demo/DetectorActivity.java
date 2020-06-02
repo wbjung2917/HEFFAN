@@ -60,6 +60,7 @@ import org.tensorflow.demo.env.Logger;
 import org.tensorflow.demo.tracking.MultiBoxTracker;
 import org.tensorflow.demo.R; // Explicit import needed for internal Google builds.
 
+import static org.tensorflow.demo.HEFFAN_filter.collectTexts;
 import static org.tensorflow.demo.HEFFAN_filter.text_adapter;
 
 /**
@@ -102,6 +103,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   private static final String YOLO_INPUT_NAME = "input";
   private static final String YOLO_OUTPUT_NAMES = "output";
   private static final int YOLO_BLOCK_SIZE = 32;
+  private static final int OCR_CNT=5;
 
   // Which detection model to use: by default uses Tensorflow Object Detection API frozen
   // checkpoints.  Optionally use legacy Multibox (trained using an older version of the API)
@@ -535,23 +537,23 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
       }
 
      */
-    for(int i=0;i<5;i++){
-      // sleep 하고
-      try{
-        Thread.sleep((long)1);
-      }catch (InterruptedException e){}
-
-      // detect 시작
-      button.setEnabled(false);
-      imageView.setImageBitmap(recognizedContent[0]);
-      new AsyncTess().execute(recognizedContent);
-    }
+    // detect 시작
+    imageView.setImageBitmap(recognizedContent[0]);
+    AsyncTess asyncTess = new AsyncTess();
+    asyncTess.execute(recognizedContent);
 
   }
 
 
 
   private class AsyncTess extends AsyncTask<Bitmap, Integer, String> {
+
+
+    @Override
+    protected void onPreExecute() {
+      //super.onPreExecute();
+      button.setEnabled(false);
+    }
 
     // 여기가 테저렉트 쓰는 부분임
     @Override
@@ -571,21 +573,20 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
       long endTime = System.currentTimeMillis();
 
       //supplement_filter();
-      text_adapter(result);
-      return "result::::"+result + "\n" + (endTime - startTime);
+      //text_adapter(result);
+      //return "result::::"+result + "\n" + (endTime - startTime);
+      return result;
     }
 
+    @Override
     protected void onPostExecute(String result) {
       LOGGER.i("  protected void onPostExecute(String result) ");
       //완료 후 버튼 속성 변경 및 결과 출력
 
       button.setEnabled(true);
-
       Log.i("ocr::", result);
+
+      collectTexts(OCR_CNT,result);
     }
-
-
-
-
   }
 }
