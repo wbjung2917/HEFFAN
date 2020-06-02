@@ -54,6 +54,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
@@ -464,12 +465,18 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
 
     Button tr_btn=findViewById(R.id.to_result);
-
     tr_btn.setOnClickListener(new View.OnClickListener(){
       @Override
       public void onClick(View v){
-        Intent res=new Intent(getApplicationContext(),org.tensorflow.demo.ResultActivity.class);       //Uri 를 이용하여 웹브라우저를 통해 웹페이지로 이동하는 기능
-        getFilterResults(); // 필터링 끝난 결과, ArrayList<ArrayList<String>> 타입
+        Intent res=new Intent(getApplicationContext(),org.tensorflow.demo.ResultActivity.class);     //Uri 를 이용하여 웹브라우저를 통해 웹페이지로 이동하는 기능
+        ArrayList<ArrayList<String>> result=getFilterResults();
+        /*
+        Log.d("InDetector",result.get(0).get(0));
+        Log.d("InDetector",result.get(0).get(1));
+        Log.d("InDetector",result.get(0).get(2));
+        Log.d("InDetectorLength",Integer.toString(result.size()));
+        */
+        res.putExtra("delivered_arraylist", result);         // 필터링 끝난 결과, ArrayList<ArrayList<String>> 타입
         startActivity((res));
       }
     });
