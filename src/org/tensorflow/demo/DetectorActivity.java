@@ -20,7 +20,6 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -28,22 +27,27 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.graphics.Typeface;
-import android.hardware.Camera;
 import android.media.ImageReader.OnImageAvailableListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
 import android.util.Size;
 import android.util.TypedValue;
-import android.view.Display;
-import android.view.Surface;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.googlecode.tesseract.android.TessBaseAPI;
+
+import org.tensorflow.demo.OverlayView.DrawCallback;
+import org.tensorflow.demo.env.BorderedText;
+import org.tensorflow.demo.env.ImageUtils;
+import org.tensorflow.demo.env.Logger;
+import org.tensorflow.demo.tracking.MultiBoxTracker;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -53,15 +57,10 @@ import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
-import org.tensorflow.demo.OverlayView.DrawCallback;
-import org.tensorflow.demo.env.BorderedText;
-import org.tensorflow.demo.env.ImageUtils;
-import org.tensorflow.demo.env.Logger;
-import org.tensorflow.demo.tracking.MultiBoxTracker;
-import org.tensorflow.demo.R; // Explicit import needed for internal Google builds.
 
+import static org.tensorflow.demo.HEFFAN_filter.checkFinishedFiltering;
 import static org.tensorflow.demo.HEFFAN_filter.collectTexts;
-import static org.tensorflow.demo.HEFFAN_filter.text_adapter;
+import static org.tensorflow.demo.HEFFAN_filter.getFilterResults;
 
 /**
  * An activity that uses a TensorFlowMultiBoxDetector and ObjectTracker to detect and then track
@@ -103,7 +102,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   private static final String YOLO_INPUT_NAME = "input";
   private static final String YOLO_OUTPUT_NAMES = "output";
   private static final int YOLO_BLOCK_SIZE = 32;
-  private static final int OCR_CNT=5;
+  private static final int OCR_CNT=2;
 
   // Which detection model to use: by default uses Tensorflow Object Detection API frozen
   // checkpoints.  Optionally use legacy Multibox (trained using an older version of the API)
@@ -431,6 +430,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   protected void onCreate(Bundle savedInstanceState) { // 액티비티 시작
     LOGGER.i("  protected void onCreate(Bundle savedInstanceState) ");
     super.onCreate(savedInstanceState); // extend한 Camera Activity로
+    getApplicationContext();
     /*
     setContentView(R.layout.activity_main);
 
@@ -455,6 +455,10 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
           CameraActivity.stopDetection = true;
           capture();
         }
+
+        // 비동기로 필터링 끝나길 기다리기
+        AsyncWait asyncWait = new AsyncWait();
+        asyncWait.execute();
       }
     });
 
@@ -465,6 +469,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
       @Override
       public void onClick(View v){
         Intent res=new Intent(getApplicationContext(),org.tensorflow.demo.ResultActivity.class);       //Uri 를 이용하여 웹브라우저를 통해 웹페이지로 이동하는 기능
+        getFilterResults(); // 필터링 끝난 결과, ArrayList<ArrayList<String>> 타입
         startActivity((res));
       }
     });
@@ -587,6 +592,34 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
       Log.i("ocr::", result);
 
       collectTexts(OCR_CNT,result);
+    }
+  }
+
+  // 필터링 결과를 받기위한 비동기 클래스
+  public class AsyncWait extends AsyncTask {
+    @Override
+    protected Object doInBackground(Object[] objects){
+      while(true){
+        try {
+          Thread.sleep((long) 2);
+        } catch (InterruptedException e) {
+          System.out.println("필터링 대기중 에러발생");
+          e.printStackTrace();
+        }
+
+        if(checkFinishedFiltering()==true){
+          System.out.println("토스트를 띄웁니다.");
+          Handler mHandler = new Handler(Looper.getMainLooper());
+          mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+              // 사용하고자 하는 코드
+              Toast.makeText(getApplicationContext(), "필터링이 끝났습니다^^", Toast.LENGTH_LONG).show();
+            }
+          }, 0);
+          return null;
+        }
+      }
     }
   }
 }

@@ -6,6 +6,8 @@ import java.util.HashMap;
 public class HEFFAN_filter {
     static int cnt = 0;
     static String result_texts="";
+    static ArrayList<ArrayList<String>> filtered_texts;
+    static boolean isFinished=false;
     public void sample(){
         ArrayList<ArrayList<String>> before=new ArrayList<ArrayList<String>>();
 
@@ -43,7 +45,8 @@ public class HEFFAN_filter {
             text.add(text_arr[i]);
         }
         before.add(text);
-        supplement_filter(before); // 최종 끝나는 부분
+        setFilterResult(supplement_filter(before)); // 최종 끝나는 부분
+        isFinished=true;
     }
 
     public static ArrayList<ArrayList<String>> supplement_filter(ArrayList<ArrayList<String>> before){
@@ -90,9 +93,15 @@ public class HEFFAN_filter {
         }
 
         System.out.println("AFTER FILTER "+result);
-
-
         return before;
-
+    }
+    public static ArrayList<ArrayList<String>> getFilterResults(){
+        return filtered_texts;
+    }
+    public static void setFilterResult(ArrayList<ArrayList<String>> texts){
+        filtered_texts=texts;
+    }
+    public static boolean checkFinishedFiltering(){
+        return isFinished;
     }
 }
