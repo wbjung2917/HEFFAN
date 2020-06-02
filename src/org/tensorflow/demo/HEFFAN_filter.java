@@ -43,7 +43,7 @@ public class HEFFAN_filter {
             text.add(text_arr[i]);
         }
         before.add(text);
-        supplement_filter(before);
+        supplement_filter(before); // 최종 끝나는 부분
     }
 
     public static ArrayList<ArrayList<String>> supplement_filter(ArrayList<ArrayList<String>> before){
