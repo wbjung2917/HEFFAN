@@ -93,7 +93,7 @@ public class HEFFAN_filter {
         }
 
         System.out.println("AFTER FILTER "+result);
-        return before;
+        return result;
     }
     public static ArrayList<ArrayList<String>> getFilterResults(){
         return filtered_texts;
