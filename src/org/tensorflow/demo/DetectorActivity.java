@@ -287,7 +287,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
   @Override
   protected void processImage() {
-    LOGGER.i(" protected void processImage() ");
+    //LOGGER.i(" protected void processImage() ");
     ++timestamp;
     final long currTimestamp = timestamp;
     byte[] originalLuminance = getLuminance();
@@ -306,7 +306,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
       return;
     }
     computingDetection = true;
-    LOGGER.i("Preparing image " + currTimestamp + " for detection in bg thread.");
+    //LOGGER.i("Preparing image " + currTimestamp + " for detection in bg thread.");
 
     rgbFrameBitmap.setPixels(getRgbBytes(), 0, previewWidth, 0, 0, previewWidth, previewHeight);
 
@@ -327,7 +327,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
         new Runnable() {
           @Override
           public void run() {
-            LOGGER.i("Running detection on image " + currTimestamp);
+            //LOGGER.i("Running detection on image " + currTimestamp);
             final long startTime = SystemClock.uptimeMillis();
             final List<Classifier.Recognition> results = contentDetector.recognizeImage(croppedBitmap);
     //        final List<Classifier.Recognition> results = detector.recognizeImage(croppedBitmap);
@@ -411,25 +411,25 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
   @Override
   protected int getLayoutId() {
-    LOGGER.i(" protected int getLayoutId() ");
+    //LOGGER.i(" protected int getLayoutId() ");
     return R.layout.camera_connection_fragment_tracking;
   }
 
   @Override
   protected Size getDesiredPreviewFrameSize() {
-    LOGGER.i(" protected Size getDesiredPreviewFrameSize() ");
+    //LOGGER.i(" protected Size getDesiredPreviewFrameSize() ");
     return DESIRED_PREVIEW_SIZE;
   }
 
   @Override
   public void onSetDebug(final boolean debug) {
-    LOGGER.i("  public void onSetDebug(final boolean debug) ");
+    //LOGGER.i("  public void onSetDebug(final boolean debug) ");
     detector.enableStatLogging(debug);
   }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) { // 액티비티 시작
-    LOGGER.i("  protected void onCreate(Bundle savedInstanceState) ");
+    //LOGGER.i("  protected void onCreate(Bundle savedInstanceState) ");
     super.onCreate(savedInstanceState); // extend한 Camera Activity로
     getApplicationContext();
     /*
@@ -485,7 +485,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     rotateMatrix.postRotate(90);
 
 
-    System.out.println("  tessBaseAPI = new TessBaseAPI();");
+    //System.out.println("  tessBaseAPI = new TessBaseAPI();");
     tessBaseAPI = new TessBaseAPI();
     String dir = getFilesDir() + "/tesseract";
     if(checkLanguageFile(dir+"/tessdata"))
@@ -540,7 +540,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
   private void capture()
   {
-    LOGGER.i("  private void capture() ");
+    //LOGGER.i("  private void capture() ");
     /*
       final Bitmap[] arr = new Bitmap[recognizedContent.size()];
       for(int i = 0; i < recognizedContent.size(); i++) {
@@ -607,12 +607,15 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     @Override
     protected Object doInBackground(Object[] objects){
       while(true){
+        /*
         try {
           Thread.sleep((long) 2);
         } catch (InterruptedException e) {
           System.out.println("필터링 대기중 에러발생");
           e.printStackTrace();
         }
+
+         */
 
         if(checkFinishedFiltering()==true){
           System.out.println("토스트를 띄웁니다.");

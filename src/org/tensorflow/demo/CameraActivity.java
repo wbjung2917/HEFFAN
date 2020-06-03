@@ -40,10 +40,11 @@ import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.WindowManager;
 import android.widget.Toast;
-import java.nio.ByteBuffer;
+
 import org.tensorflow.demo.env.ImageUtils;
 import org.tensorflow.demo.env.Logger;
-import org.tensorflow.demo.R; // Explicit import needed for internal Google builds.
+
+import java.nio.ByteBuffer;
 
 public abstract class CameraActivity extends Activity
     implements OnImageAvailableListener, Camera.PreviewCallback {
@@ -75,16 +76,16 @@ public abstract class CameraActivity extends Activity
   @Override
   protected void onCreate(final Bundle savedInstanceState) { // Detector로부터 호출됨
     LOGGER.d("onCreate " + this);
-    System.out.println("  super.onCreate(null);");
+    //System.out.println("  super.onCreate(null);");
     super.onCreate(null);
-    System.out.println("  getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);");
+    //.out.println("  getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);");
     getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-    System.out.println("  setContentView(R.layout.activity_camera);");
+    //System.out.println("  setContentView(R.layout.activity_camera);");
     setContentView(R.layout.activity_camera);
 
     if (hasPermission()) {
-      System.out.println("  setFragment();");
+      //System.out.println("  setFragment();");
       setFragment(); // Camera Activity에 함수 호출
     } else {
       requestPermission();
@@ -111,7 +112,7 @@ public abstract class CameraActivity extends Activity
    */
   @Override
   public void onPreviewFrame(final byte[] bytes, final Camera camera) {
-    System.out.println("  public void onPreviewFrame(final byte[] bytes, final Camera camera)");
+    //System.out.println("  public void onPreviewFrame(final byte[] bytes, final Camera camera)");
     if (isProcessingFrame) {
       LOGGER.w("Dropping frame!");
       return;
@@ -161,7 +162,7 @@ public abstract class CameraActivity extends Activity
    */
   @Override
   public void onImageAvailable(final ImageReader reader) {
-    LOGGER.i("  public void onImageAvailable(final ImageReader reader)");
+    //LOGGER.i("  public void onImageAvailable(final ImageReader reader)");
     //We need wait until we have some size from onPreviewSizeChosen
     if (previewWidth == 0 || previewHeight == 0) {
       return;
@@ -282,8 +283,7 @@ public abstract class CameraActivity extends Activity
   @Override
   public void onRequestPermissionsResult(
       final int requestCode, final String[] permissions, final int[] grantResults) {
-    LOGGER.i(" public void onRequestPermissionsResult(\n" +
-            "      final int requestCode, final String[] permissions, final int[] grantResults)");
+    LOGGER.i(" public void onRequestPermissionsResult(\n" + "      final int requestCode, final String[] permissions, final int[] grantResults)");
     if (requestCode == PERMISSIONS_REQUEST) {
       if (grantResults.length > 0
           && grantResults[0] == PackageManager.PERMISSION_GRANTED
@@ -383,7 +383,7 @@ public abstract class CameraActivity extends Activity
                 public void onPreviewSizeChosen(final Size size, final int rotation) {
                   previewHeight = size.getHeight();
                   previewWidth = size.getWidth();
-                  System.out.println("  CameraActivity.this.onPreviewSizeChosen(size, rotation);");
+                  //System.out.println("  CameraActivity.this.onPreviewSizeChosen(size, rotation);");
                   CameraActivity.this.onPreviewSizeChosen(size, rotation);
                 }
               },
@@ -405,7 +405,7 @@ public abstract class CameraActivity extends Activity
   }
 
   protected void fillBytes(final Plane[] planes, final byte[][] yuvBytes) {
-    LOGGER.i("  protected void fillBytes(final Plane[] planes, final byte[][] yuvBytes)");
+    //LOGGER.i("  protected void fillBytes(final Plane[] planes, final byte[][] yuvBytes)");
     // Because of the variable row stride it's not possible to know in
     // advance the actual necessary dimensions of the yuv planes.
     for (int i = 0; i < planes.length; ++i) {
