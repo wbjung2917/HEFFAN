@@ -51,7 +51,9 @@ public class HEFFAN_filter {
 
     public static ArrayList<ArrayList<String>> supplement_filter(ArrayList<ArrayList<String>> before){
 
-        String [] filter= {"Sodium","Calories","Protein","Vitamin C","Sugars","Total Fat","Saturated Fat","Trans Fat","Cholesterol","Sodium"};
+        String [] filter= {"Sodium","Calories","Protein","Vitamin C"
+                ,"Sugars","Total Fat","Saturated Fat","Trans Fat"
+                ,"Cholesterol","Protein"};
 
         ArrayList<ArrayList<String>> result=new ArrayList<ArrayList<String>>();
 
