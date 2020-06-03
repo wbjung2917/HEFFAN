@@ -446,7 +446,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
       @Override
       public void onClick(View view) {
         // 캡처를 여러번 실행하도록 하자
-        for(int i=0;i<10;i++){
+        for(int i=0;i<OCR_CNT;i++){
           // sleep 0.5초하고
           try{
             Thread.sleep((long) 0.5);
