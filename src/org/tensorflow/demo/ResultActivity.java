@@ -8,6 +8,12 @@ import android.text.Html;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
@@ -61,7 +67,6 @@ public class ResultActivity extends Activity {
             TextView textView3=new TextView(this);
             ConstraintLayout.LayoutParams params3=new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT,ConstraintLayout.LayoutParams.WRAP_CONTENT);
             params3.rightToRight=ConstraintLayout.LayoutParams.PARENT_ID;
-            params3.topToTop=ConstraintLayout.LayoutParams.PARENT_ID;
             params3.bottomToBottom=ConstraintLayout.LayoutParams.PARENT_ID;
             params3.setMargins(20,10,20,10);
             textView3.setTextColor(getResources().getColor(R.color.colorPrimary));
@@ -76,37 +81,119 @@ public class ResultActivity extends Activity {
             scroll_view.addView(cardView);
         }
     }
+    public void makeChart(ArrayList<ArrayList<String>> arr)
+    {
+        ArrayList<String> name=new ArrayList<>();
+        ArrayList<Float> value=new ArrayList<>();
+        float sum=0;
+        for (int i = 0; i < arr.size(); i++) {
+            String s=arr.get(i).get(1);
+            String[] tmp={s.replaceAll("[^0-9]",""),s.replaceAll("[0-9]","")};
+            Log.d("Value",tmp[0] + " " + tmp[1]);
+            if(tmp[1].equals("g"))
+            {
+                name.add(arr.get(i).get(0));
+                value.add(Float.parseFloat(tmp[0])*1000);
+                sum+=Float.parseFloat(tmp[0])*1000;
+            }
+            else if(tmp[1].equals("mg"))
+            {
+                name.add(arr.get(i).get(0));
+                value.add(Float.parseFloat(tmp[0]));
+                sum+=Float.parseFloat(tmp[0]);
+            }
+            else if(tmp[1].equals("mcg"))
+            {
+                name.add(arr.get(i).get(0));
+                value.add(Float.parseFloat(tmp[0])/1000);
+                sum+=Float.parseFloat(tmp[0])/1000;
+            }
+            else
+            {
+                Log.d("MetricError","It is not g, mg, mcg");
+            }
+        }
+        PieChart pieChart=findViewById(R.id.pieChart);
+        pieChart.setUsePercentValues(true);
+
+        ArrayList<PieEntry> values=new ArrayList<>();
+
+
+        int counter =0;
+        float small_sum=0;
+        for(int i=0; i<name.size(); i++)
+        {
+            if(value.get(i)>(sum/100))
+            {
+                values.add(new PieEntry(value.get(i), name.get(i)));
+            }
+            else
+            {
+                counter++;
+                small_sum+=value.get(i);
+            }
+        }
+        if(counter>0)
+        {
+            if(small_sum> (sum/100))
+            {
+                values.add(new PieEntry(small_sum, "ETC"));
+            }
+            else
+            {
+                values.add(new PieEntry((float) (sum/100), "ETC"));
+            }
+        }
+
+        Description des=new Description();
+        des.setText("단위 : %");
+        des.setTextSize(8);
+        pieChart.setDescription(des);
+
+        PieDataSet dataSet=new PieDataSet(values,"");
+        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+
+        PieData data=new PieData((dataSet));
+        data.setValueTextSize(15f);
+
+        pieChart.setData(data);
+    }
     @Override
     protected void onCreate(Bundle saveInstanceState){
         Intent intent =getIntent();
         ArrayList<ArrayList<String>> arr=new ArrayList<>();
         arr= (ArrayList<ArrayList<String>>) intent.getSerializableExtra("delivered_arraylist");
+        ArrayList<ArrayList<String>> arr2=new ArrayList<>();
         /*
         Log.d("InResult",arr.get(0).get(0));
         Log.d("InResult",arr.get(0).get(1));
         Log.d("InResult",arr.get(0).get(2));
         Log.d("InResultLength",Integer.toString(arr.size()));
         */
-        /*sample
         ArrayList<String> a1=new ArrayList<>();
         a1.add("Sodium");
-        a1.add("10mcg");
+        a1.add("800mg");
         a1.add("50%");
         ArrayList<String> a2=new ArrayList<>();
         a2.add("Protein");
-        a2.add("20g");
+        a2.add("48g");
         a2.add("90%");
         ArrayList<String> a3=new ArrayList<>();
         a3.add("Vitamin");
-        a3.add("10mg");
+        a3.add("50g");
         a3.add("100%");
-        arr.add(a1);
-        arr.add(a2);
-        arr.add(a3);
-        */
+        ArrayList<String> a4=new ArrayList<>();
+        a4.add("Colesterol");
+        a4.add("800mg");
+        a4.add("50%");
+        arr2.add(a1);
+        arr2.add(a2);
+        arr2.add(a3);
+        arr2.add(a4);
         //{"Sodium","10mcg","50%"},{"Protein","20g","90%"},{"Vitamin","10mg","100%"}
         super.onCreate(saveInstanceState);
         setContentView(R.layout.activity_result);
-        makeCards(arr);
+        makeCards(arr2);
+        makeChart(arr2);
     }
 }
