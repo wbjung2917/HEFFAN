@@ -120,7 +120,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   private static final String YOLO_INPUT_NAME = "input";
   private static final String YOLO_OUTPUT_NAMES = "output";
   private static final int YOLO_BLOCK_SIZE = 32;
-  private static final int OCR_CNT=4;
+  private static final int OCR_CNT=1;
 
   // Which detection model to use: by default uses Tensorflow Object Detection API frozen
   // checkpoints.  Optionally use legacy Multibox (trained using an older version of the API)
@@ -493,15 +493,27 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
       @Override
       public void onClick(View v){
         Intent res=new Intent(getApplicationContext(),org.tensorflow.demo.ResultActivity.class);     //Uri 를 이용하여 웹브라우저를 통해 웹페이지로 이동하는 기능
-        ArrayList<ArrayList<String>> result=getFilterResults();
+        if(getFilterResults()!=null){
+          ArrayList<ArrayList<String>> result=getFilterResults();
+          res.putExtra("delivered_arraylist", result);         // 필터링 끝난 결과, ArrayList<ArrayList<String>> 타입
+          startActivity((res));
+        }
+        else{
+          Handler mHandler = new Handler(Looper.getMainLooper());
+          mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+              // 사용하고자 하는 코드
+              Toast.makeText(getApplicationContext(), "필터링에 실패했습니다..^^;;", Toast.LENGTH_LONG).show();
+            }
+          }, 0);
+        }
         /*
         Log.d("InDetector",result.get(0).get(0));
         Log.d("InDetector",result.get(0).get(1));
         Log.d("InDetector",result.get(0).get(2));
         Log.d("InDetectorLength",Integer.toString(result.size()));
         */
-        res.putExtra("delivered_arraylist", result);         // 필터링 끝난 결과, ArrayList<ArrayList<String>> 타입
-        startActivity((res));
       }
     });
 
@@ -575,13 +587,13 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
      */
     // cloud vision 사용
     for(final Bitmap content:recognizedContent){
-      System.out.println("called cloud vision");
+      LOGGER.i("called cloud vision");
       callCloudVision(content);
     }
     // detect 시작
     imageView.setImageBitmap(recognizedContent[0]);
-    AsyncTess asyncTess = new AsyncTess();
-    asyncTess.execute(recognizedContent);
+    //AsyncTess asyncTess = new AsyncTess();
+    //asyncTess.execute(recognizedContent);
 
   }
 
@@ -647,7 +659,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
          */
 
         if(checkFinishedFiltering()==true){
-          System.out.println("토스트를 띄웁니다.");
+          LOGGER.i("토스트를 띄웁니다.");
           Handler mHandler = new Handler(Looper.getMainLooper());
           mHandler.postDelayed(new Runnable() {
             @Override
@@ -739,22 +751,22 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             vision.images().annotate(batchAnnotateImagesRequest);
     // Due to a bug: requests to Vision API containing large images fail when GZipped.
     annotateRequest.setDisableGZipContent(true);
-    System.out.println("created Cloud Vision request object, sending request");
+    LOGGER.i("created Cloud Vision request object, sending request");
 
     return annotateRequest;
   }
 
   private static String convertResponseToString(BatchAnnotateImagesResponse response) {
-    StringBuilder message = new StringBuilder("I found these things:\n\n");
+    StringBuilder message = new StringBuilder();
 
     List<EntityAnnotation> labels = response.getResponses().get(0).getTextAnnotations();
     if (labels != null) {
       for (EntityAnnotation label : labels) {
-        message.append(String.format(Locale.US, "%.3f: %s", label.getScore(), label.getDescription()));
-        message.append("\n");
+        message.append(String.format(Locale.US, "%s", label.getDescription()));
+        break;
       }
     } else {
-      message.append("nothing");
+      //message.append("nothing");
     }
 
     return message.toString();
@@ -772,26 +784,27 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     @Override
     protected String doInBackground(Object... params) {
       try {
-        System.out.println("created Cloud Vision request object, sending request");
+        LOGGER.i("created Cloud Vision request object, sending request");
         BatchAnnotateImagesResponse response = mRequest.execute();
         return convertResponseToString(response);
 
       } catch (GoogleJsonResponseException e) {
-        System.out.println("failed to make API request because " + e.getContent());
+        LOGGER.e("failed to make API request because " + e.getContent());
       } catch (IOException e) {
-        System.out.println("failed to make API request because of other IOException " +
+        LOGGER.e("failed to make API request because of other IOException " +
                 e.getMessage());
       }
       return "Cloud Vision API request failed. Check logs for details.";
     }
 
     protected void onPostExecute(String result) {
-      DetectorActivity activity = mActivityWeakReference.get();
-      System.out.println("\n\n########\n"+result+"\n########\n\n");
-      if (activity != null && !activity.isFinishing()) {
-        //TextView imageDetail = activity.findViewById(R.id.image_details);
-        //imageDetail.setText(result);
-      }
+      // 개행문자 제거
+      result=result.replace("\n"," ");
+      result=result.replace("Og","0g");
+      result=result.replace("Omg","0mg");
+      result=result.replace("Omcg","0mcg");
+      LOGGER.i("\n\n########\n"+result+"\n########\n\n");
+      collectTexts(OCR_CNT,result);
     }
   }
 

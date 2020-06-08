@@ -27,7 +27,7 @@ public class HEFFAN_filter {
     public static void collectTexts(int loop,String text){
         System.out.println("colleced Texts");
         cnt++;
-        result_texts+=text;
+        result_texts+=text+"\n";
         if(cnt>=loop){
             cnt=0;
             text_adapter(result_texts);

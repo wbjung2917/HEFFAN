@@ -8,6 +8,8 @@ import android.text.Html;
 import android.util.Log;
 import android.widget.TextView;
 
+import androidx.core.view.ViewCompat;
+
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.PieData;
@@ -17,10 +19,6 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
-
-import androidx.core.view.ViewCompat;
-
-import static org.tensorflow.demo.HEFFAN_filter.getFilterResults;
 
 
 public class ResultActivity extends Activity {
@@ -193,7 +191,10 @@ public class ResultActivity extends Activity {
         //{"Sodium","10mcg","50%"},{"Protein","20g","90%"},{"Vitamin","10mg","100%"}
         super.onCreate(saveInstanceState);
         setContentView(R.layout.activity_result);
-        makeCards(arr2);
-        makeChart(arr2);
+        //makeCards(arr2);
+        //makeChart(arr2);
+        System.out.println(" ### make result ###");
+        makeCards(arr);
+        makeChart(arr);
     }
 }
