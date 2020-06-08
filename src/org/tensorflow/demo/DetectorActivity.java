@@ -799,10 +799,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
     protected void onPostExecute(String result) {
       // 개행문자 제거
-      result=result.replace("\n"," ");
-      result=result.replace("Og","0g");
-      result=result.replace("Omg","0mg");
-      result=result.replace("Omcg","0mcg");
       LOGGER.i("\n\n########\n"+result+"\n########\n\n");
       collectTexts(OCR_CNT,result);
     }

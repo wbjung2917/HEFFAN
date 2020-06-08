@@ -26,6 +26,10 @@ public class HEFFAN_filter {
 
     public static void collectTexts(int loop,String text){
         System.out.println("colleced Texts");
+        text=text.replace("\n"," ");
+        text=text.replace("Og","0g");
+        text=text.replace("Omg","0mg");
+        text=text.replace("Omcg","0mcg");
         cnt++;
         result_texts+=text+"\n";
         if(cnt>=loop){
