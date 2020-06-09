@@ -30,6 +30,7 @@ public class HEFFAN_filter {
         text=text.replace("Og","0g");
         text=text.replace("Omg","0mg");
         text=text.replace("Omcg","0mcg");
+        text=text.replace("9 ","g ");
         cnt++;
         result_texts+=text+"\n";
         if(cnt>=loop){
@@ -57,7 +58,8 @@ public class HEFFAN_filter {
 
         String [] filter= {"Sodium","Calories","Protein","Vitamin C"
                 ,"Sugars","Total Fat","Saturated Fat","Trans Fat"
-                ,"Cholesterol","Protein"};
+                ,"Cholesterol","Protein","Total Carbohydrate","Dietary Fiber"
+                ,"Vitamin D","Calcium","Iron","Potassium","Calcium"};
 
         ArrayList<ArrayList<String>> result=new ArrayList<ArrayList<String>>();
 
