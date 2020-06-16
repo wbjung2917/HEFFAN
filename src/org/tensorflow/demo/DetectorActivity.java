@@ -493,6 +493,31 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
       @Override
       public void onClick(View v){
         Intent res=new Intent(getApplicationContext(),org.tensorflow.demo.ResultActivity.class);     //Uri 를 이용하여 웹브라우저를 통해 웹페이지로 이동하는 기능
+        /*
+        ArrayList<ArrayList<String>> arr=new ArrayList<>();
+        ArrayList<String> a1=new ArrayList<>();
+        a1.add("Sodium");
+        a1.add("70mg");
+        a1.add("50%");
+        ArrayList<String> a2=new ArrayList<>();
+        a2.add("Protein");
+        a2.add("10g");
+        a2.add("90%");
+        ArrayList<String> a3=new ArrayList<>();
+        a3.add("Vitamin C");
+        a3.add("40mg");
+        a3.add("100%");
+        ArrayList<String> a4=new ArrayList<>();
+        a4.add("Dietary Fiber");
+        a4.add("10g");
+        a4.add("50%");
+        arr.add(a1);
+        arr.add(a2);
+        arr.add(a3);
+        arr.add(a4);
+        res.putExtra("delivered_arraylist",arr);
+        startActivity((res));//우빈테스트용
+        */
         if(getFilterResults()!=null){
           ArrayList<ArrayList<String>> result=getFilterResults();
           res.putExtra("delivered_arraylist", result);         // 필터링 끝난 결과, ArrayList<ArrayList<String>> 타입

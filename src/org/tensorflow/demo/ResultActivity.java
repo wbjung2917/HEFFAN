@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.text.Html;
 import android.util.Log;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.core.view.ViewCompat;
@@ -156,45 +160,53 @@ public class ResultActivity extends Activity {
 
         pieChart.setData(data);
     }
+    public void setSpinner()
+    {
+        final Spinner gender=(Spinner)findViewById(R.id.gender_text);
+        final Spinner age=(Spinner)findViewById(R.id.age_text);
+
+        final ArrayAdapter genderAdapter= ArrayAdapter.createFromResource(this,R.array.genderArray,R.layout.spinner_item);
+        final ArrayAdapter ageAdapter= ArrayAdapter.createFromResource(this,R.array.ageArray,R.layout.spinner_item);
+
+        genderAdapter.setDropDownViewResource(R.layout.spinner_item);
+        ageAdapter.setDropDownViewResource(R.layout.spinner_item);
+
+        gender.setAdapter(genderAdapter);
+        age.setAdapter(ageAdapter);
+    }
     @Override
     protected void onCreate(Bundle saveInstanceState){
         Intent intent =getIntent();
         ArrayList<ArrayList<String>> arr=new ArrayList<>();
         arr= (ArrayList<ArrayList<String>>) intent.getSerializableExtra("delivered_arraylist");
-        ArrayList<ArrayList<String>> arr2=new ArrayList<>();
-        /*
-        Log.d("InResult",arr.get(0).get(0));
-        Log.d("InResult",arr.get(0).get(1));
-        Log.d("InResult",arr.get(0).get(2));
-        Log.d("InResultLength",Integer.toString(arr.size()));
-        */
-        ArrayList<String> a1=new ArrayList<>();
-        a1.add("Sodium");
-        a1.add("800mg");
-        a1.add("50%");
-        ArrayList<String> a2=new ArrayList<>();
-        a2.add("Protein");
-        a2.add("48g");
-        a2.add("90%");
-        ArrayList<String> a3=new ArrayList<>();
-        a3.add("Vitamin");
-        a3.add("50g");
-        a3.add("100%");
-        ArrayList<String> a4=new ArrayList<>();
-        a4.add("Colesterol");
-        a4.add("800mg");
-        a4.add("50%");
-        arr2.add(a1);
-        arr2.add(a2);
-        arr2.add(a3);
-        arr2.add(a4);
         //{"Sodium","10mcg","50%"},{"Protein","20g","90%"},{"Vitamin","10mg","100%"}
         super.onCreate(saveInstanceState);
         setContentView(R.layout.activity_result);
-        //makeCards(arr2);
-        //makeChart(arr2);
         System.out.println(" ### make result ###");
         makeCards(arr);
         makeChart(arr);
+        setSpinner();
+
+        final ArrayList<ArrayList<String>> arr2 = arr;
+
+        Button btn=findViewById(R.id.analyzing_button);
+        btn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v)
+            {
+                Spinner gender = findViewById(R.id.gender_text);
+                Spinner age = findViewById(R.id.age_text);
+                final String g=gender.getSelectedItem().toString();
+                final String a=age.getSelectedItem().toString();
+                Intent pintent = new Intent(getApplicationContext(), PopupActivity.class);
+                pintent.putExtra("array",arr2);
+                pintent.putExtra("gender",g);
+                pintent.putExtra("age",a);
+                Log.d("InResult",g);
+                Log.d("InResult",a);
+                startActivityForResult(pintent,1);
+            }
+        });
     }
+
 }

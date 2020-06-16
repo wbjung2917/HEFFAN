@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="genderArray">
+        <item>남</item>
+        <item>여</item>
+    </string-array>
+    <string-array name="ageArray">
+        <item>6개월이하</item>
+        <item>6개월 ~ 12개월</item>
+        <item>1세 ~ 3세</item>
+        <item>4세 ~ 8세</item>
+        <item>9세 ~ 13세</item>
+        <item>14세 ~ 18세</item>
+        <item>19세 ~ 30세</item>
+        <item>31세 ~ 50세</item>
+        <item>51세 ~ 70세</item>
+        <item>71세이상</item>
+    </string-array>
+</resources>
